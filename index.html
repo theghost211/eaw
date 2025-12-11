@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webhook Sender</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #1e1e1e; color: #fff; padding: 20px; }
+    input, textarea, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
+    button { background-color: #4CAF50; color: white; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    label { margin-top: 10px; display: block; }
+  </style>
+</head>
+<body>
+
+<h2>Webhook Sender</h2>
+
+<label>رابط Webhook</label>
+<input type="text" id="webhook" placeholder="ضع رابط Webhook هنا">
+
+<label>نوع الرسالة</label>
+<select id="type">
+  <option value="text">رسالة عادية</option>
+  <option value="embed">Embed</option>
+</select>
+
+<label>عنوان Embed (اختياري)</label>
+<input type="text" id="embedTitle" placeholder="عنوان Embed">
+
+<label>لون Embed (Hex)</label>
+<input type="text" id="embedColor" placeholder="#3498db">
+
+<label>نص الرسالة</label>
+<textarea id="content" rows="5" placeholder="اكتب رسالتك هنا"></textarea>
+
+<button onclick="sendWebhook()">إرسال الرسالة</button>
+
+<script>
+function sendWebhook() {
+  const webhook = document.getElementById('webhook').value;
+  const type = document.getElementById('type').value;
+  const title = document.getElementById('embedTitle').value;
+  const color = document.getElementById('embedColor').value.replace('#','0x') || "0x000000";
+  const content = document.getElementById('content').value;
+
+  if(!webhook || !content) {
+    alert("الرجاء إدخال Webhook والنص!");
+    return;
+  }
+
+  let payload = {};
+
+  if(type === "text") {
+    payload = { content: content };
+  } else {
+    payload = {
+      embeds: [{
+        title: title || "Embed",
+        description: content,
+        color: parseInt(color)
+      }]
+    };
+  }
+
+  fetch(webhook, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    if(response.ok) alert("تم إرسال الرسالة بنجاح!");
+    else alert("فشل الإرسال، تحقق من الرابط.");
+  })
+  .catch(err => {
+    alert("حدث خطأ: " + err);
+  });
+}
+</script>
+
+</body>
+</html>
