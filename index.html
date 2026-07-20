@@ -1,82 +1,674 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar-SA">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webhook Sender</title>
+  <title>🇸🇦 أداة السبام السعودية | أقوى مرسل ويب هوك</title>
+  <!-- خطوط عربية وسعودية -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Changa:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; background-color: #1e1e1e; color: #fff; padding: 20px; }
-    input, textarea, select, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
-    button { background-color: #4CAF50; color: white; cursor: pointer; }
-    button:hover { background-color: #45a049; }
-    label { margin-top: 10px; display: block; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', 'Changa', sans-serif;
+      background: #0c0c0f;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+      color: #fff;
+      background-image: radial-gradient(ellipse at 50% 30%, rgba(0, 108, 53, 0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 70%, rgba(0, 108, 53, 0.1) 0%, transparent 50%);
+    }
+
+    /* زخرفة سعودية خفيفة */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.3;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 780px;
+      background: rgba(18, 18, 22, 0.9);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(0, 108, 53, 0.3);
+      border-radius: 28px;
+      padding: 30px 28px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,108,53,0.2) inset, 0 0 70px rgba(0,108,53,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-bottom: 2px solid rgba(0,108,53,0.5);
+      padding-bottom: 14px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .flag-icon {
+      font-size: 2.2rem;
+      filter: drop-shadow(0 0 10px #006C35);
+    }
+    .title {
+      font-size: 1.9rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .title span {
+      color: #00c853;
+    }
+    .saudi-badge {
+      background: #006C35;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 20px #006C35;
+      letter-spacing: 0.5px;
+    }
+    .hijri-date {
+      background: rgba(0,0,0,0.5);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: #ccc;
+      font-weight: 600;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 18px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.3s;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .tab.active {
+      background: #006C35;
+      border-color: #00c853;
+      color: #fff;
+      box-shadow: 0 0 20px #006C35;
+    }
+
+    .panel {
+      display: none;
+    }
+    .panel.active {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(0,108,53,0.25);
+      border-radius: 14px;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+      transition: 0.3s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #00c853;
+      box-shadow: 0 0 20px #00c85350;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .row > div {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .spam-panel {
+      background: rgba(255, 23, 68, 0.05);
+      border: 1px dashed #ff1744;
+      border-radius: 18px;
+      padding: 18px;
+      margin-top: 8px;
+    }
+    .spam-panel h4 {
+      color: #ff1744;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border-radius: 30px;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Cairo', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .btn-send {
+      background: linear-gradient(135deg, #006C35, #00a84e);
+      color: #fff;
+      box-shadow: 0 8px 25px #006C3580;
+    }
+    .btn-spam {
+      background: linear-gradient(135deg, #ff1744, #b71c1c);
+      color: #fff;
+      box-shadow: 0 8px 25px #ff174480;
+    }
+    .btn-stop {
+      background: #444;
+      color: #fff;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .stat-card {
+      flex: 1;
+      background: rgba(0,0,0,0.5);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #333;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00c853;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: #aaa;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 8px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff1744, #ff6d00);
+      border-radius: 10px;
+      transition: width 0.2s;
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1e1e2e;
+      border: 2px solid #00c853;
+      color: #00c853;
+      padding: 14px 24px;
+      border-radius: 20px;
+      font-weight: 700;
+      z-index: 999;
+      box-shadow: 0 10px 30px #00c85360;
+      animation: slideIn 0.4s, fadeOut 0.4s 2.5s forwards;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.error { border-color: #ff1744; color: #ff1744; box-shadow: 0 10px 30px #ff174460; }
+    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-20px); } }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: #888;
+      border-top: 1px solid #333;
+      padding-top: 12px;
+    }
   </style>
 </head>
 <body>
 
-<h2>Webhook Sender</h2>
+  <div class="container">
+    <!-- الهيدر -->
+    <div class="header">
+      <div class="logo">
+        <span class="flag-icon">🇸🇦</span>
+        <span class="title">أداة <span>السبام</span> السعودية</span>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span class="hijri-date" id="hijriDate"></span>
+        <span class="saudi-badge">🇸🇦 صنع في السعودية</span>
+      </div>
+    </div>
 
-<label>رابط Webhook</label>
-<input type="text" id="webhook" placeholder="ضع رابط Webhook هنا">
+    <!-- التبويبات -->
+    <div class="tabs">
+      <div class="tab active" data-tab="basic">📝 الأساسي</div>
+      <div class="tab" data-tab="embed">🎨 التضمين</div>
+      <div class="tab" data-tab="spam">🔥 السبام</div>
+      <div class="tab" data-tab="advanced">⚙️ متقدم</div>
+    </div>
 
-<label>نوع الرسالة</label>
-<select id="type">
-  <option value="text">رسالة عادية</option>
-  <option value="embed">Embed</option>
-</select>
+    <!-- الأساسي -->
+    <div class="panel active" id="panel-basic">
+      <div class="input-group">
+        <label>🔗 روابط الويب هوك (كل رابط بسطر)</label>
+        <textarea id="webhooks" rows="3" placeholder="https://discord.com/api/webhooks/..."></textarea>
+      </div>
+      <div class="input-group">
+        <label>💬 كلام الرسالة</label>
+        <textarea id="content" rows="2" placeholder="يا هلا والله!"></textarea>
+      </div>
+      <div class="row">
+        <div class="input-group">
+          <label>👤 الاسم اللي يطلع</label>
+          <input type="text" id="username" placeholder="سعودي كول">
+        </div>
+        <div class="input-group">
+          <label>🖼️ رابط الأفاتار</label>
+          <input type="text" id="avatarUrl" placeholder="https://i.imgur.com/...">
+        </div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        <input type="checkbox" id="tts" style="width:auto;"> 🔊 صوت (TTS)
+      </label>
+    </div>
 
-<label>عنوان Embed (اختياري)</label>
-<input type="text" id="embedTitle" placeholder="عنوان Embed">
+    <!-- التضمين -->
+    <div class="panel" id="panel-embed">
+      <div class="input-group">
+        <label>📌 عنوان التضمين</label>
+        <input type="text" id="embedTitle" placeholder="عنوان خطير">
+      </div>
+      <div class="input-group">
+        <label>📝 وصف التضمين</label>
+        <textarea id="embedDescription" rows="2" placeholder="تفاصيل التضمين هنا"></textarea>
+      </div>
+      <div class="row">
+        <div class="input-group">
+          <label>🎨 اللون (Hex)</label>
+          <input type="text" id="embedColor" value="#006C35">
+        </div>
+        <div class="input-group">
+          <label>🖼️ صورة كبيرة</label>
+          <input type="text" id="embedImage" placeholder="رابط صورة">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-group">
+          <label>🖼️ صورة مصغرة</label>
+          <input type="text" id="embedThumbnail" placeholder="رابط المصغر">
+        </div>
+        <div class="input-group">
+          <label>👤 اسم الكاتب</label>
+          <input type="text" id="embedAuthor" placeholder="سعودي">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>📎 رابط المصدر</label>
+        <input type="text" id="embedUrl" placeholder="https://example.com">
+      </div>
+    </div>
 
-<label>لون Embed (Hex)</label>
-<input type="text" id="embedColor" placeholder="#3498db">
+    <!-- السبام -->
+    <div class="panel" id="panel-spam">
+      <div class="spam-panel">
+        <h4>🚀 إعدادات السبام النارية</h4>
+        <div class="row">
+          <div class="input-group">
+            <label>🔢 كم رسالة تبغى ترسل؟</label>
+            <input type="number" id="spamCount" value="20" min="1" max="1000">
+          </div>
+          <div class="input-group">
+            <label>⏱️ التأخير (مللي ثانية)</label>
+            <input type="number" id="spamDelay" value="400" min="30" max="5000">
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-group">
+            <label>🎲 تأخير عشوائي (أقل شي)</label>
+            <input type="number" id="delayMin" value="100" min="30">
+          </div>
+          <div class="input-group">
+            <label>🎲 تأخير عشوائي (أكثر شي)</label>
+            <input type="number" id="delayMax" value="800" min="50">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>📋 رسايل متعددة (كل سطر رسالة، يختار عشوائي)</label>
+          <textarea id="multiMessages" rows="2" placeholder="رسالة 1&#10;رسالة 2&#10;رسالة سبام"></textarea>
+        </div>
+      </div>
+    </div>
 
-<label>نص الرسالة</label>
-<textarea id="content" rows="5" placeholder="اكتب رسالتك هنا"></textarea>
+    <!-- متقدم -->
+    <div class="panel" id="panel-advanced">
+      <div class="input-group">
+        <label>⏳ عد تنازلي قبل السبام (ثواني)</label>
+        <input type="number" id="countdown" value="3" min="0" max="10">
+      </div>
+      <div class="input-group">
+        <label>🔄 طريقة تبديل الروابط</label>
+        <select id="rotateMode">
+          <option value="sequential">واحد ورا واحد</option>
+          <option value="random">عشوائي</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>📎 رابط ملف (اختياري)</label>
+        <input type="text" id="fileUrl" placeholder="رابط ملف مباشر">
+      </div>
+    </div>
 
-<button onclick="sendWebhook()">إرسال الرسالة</button>
+    <!-- الأزرار -->
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin:20px 0 10px;">
+      <button class="btn btn-send" id="btnSend">📨 أرسل وحدة</button>
+      <button class="btn btn-spam" id="btnSpam">🔥 ابدأ السبام</button>
+      <button class="btn btn-stop" id="btnStop" style="display:none;">⏹️ وقف السبام</button>
+    </div>
 
-<script>
-function sendWebhook() {
-  const webhook = document.getElementById('webhook').value;
-  const type = document.getElementById('type').value;
-  const title = document.getElementById('embedTitle').value;
-  const color = document.getElementById('embedColor').value.replace('#','0x') || "0x000000";
-  const content = document.getElementById('content').value;
+    <!-- الإحصائيات -->
+    <div class="stats" id="statsContainer" style="display:none;">
+      <div class="stat-card"><span class="stat-value" id="sentCount">0</span><div class="stat-label">✅ تم الإرسال</div></div>
+      <div class="stat-card"><span class="stat-value" id="failCount">0</span><div class="stat-label">❌ فشل</div></div>
+      <div class="stat-card"><span class="stat-value" id="rateLimitCount">0</span><div class="stat-label">⏳ ريت ليمت</div></div>
+      <div class="stat-card"><span class="stat-value" id="timerDisplay">0s</span><div class="stat-label">⏱️ الوقت</div></div>
+    </div>
+    <div class="progress-wrap" id="progressWrap" style="display:none;">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div id="liveMessage" style="text-align:center; font-weight:700; color:#ffaa00; margin-top:8px;"></div>
 
-  if(!webhook || !content) {
-    alert("الرجاء إدخال Webhook والنص!");
-    return;
-  }
+    <div class="footer-note">
+      ⚙️ كود من تصمييمي - لا تنسى الصلاة على النبي ﷺ
+    </div>
+  </div>
 
-  let payload = {};
+  <script>
+    (() => {
+      // عرض التاريخ الهجري
+      function updateHijriDate() {
+        const date = new Date();
+        const options = { calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('hijriDate').textContent = new Intl.DateTimeFormat('ar-SA', options).format(date);
+      }
+      updateHijriDate();
 
-  if(type === "text") {
-    payload = { content: content };
-  } else {
-    payload = {
-      embeds: [{
-        title: title || "Embed",
-        description: content,
-        color: parseInt(color)
-      }]
-    };
-  }
+      // العناصر
+      const webhooksInput = document.getElementById('webhooks');
+      const contentInput = document.getElementById('content');
+      const usernameInput = document.getElementById('username');
+      const avatarUrlInput = document.getElementById('avatarUrl');
+      const ttsCheck = document.getElementById('tts');
+      const embedTitle = document.getElementById('embedTitle');
+      const embedDesc = document.getElementById('embedDescription');
+      const embedColor = document.getElementById('embedColor');
+      const embedImage = document.getElementById('embedImage');
+      const embedThumb = document.getElementById('embedThumbnail');
+      const embedAuthor = document.getElementById('embedAuthor');
+      const embedUrl = document.getElementById('embedUrl');
+      const spamCount = document.getElementById('spamCount');
+      const spamDelay = document.getElementById('spamDelay');
+      const delayMin = document.getElementById('delayMin');
+      const delayMax = document.getElementById('delayMax');
+      const multiMessages = document.getElementById('multiMessages');
+      const countdownInput = document.getElementById('countdown');
+      const rotateMode = document.getElementById('rotateMode');
+      const fileUrl = document.getElementById('fileUrl');
+      const btnSend = document.getElementById('btnSend');
+      const btnSpam = document.getElementById('btnSpam');
+      const btnStop = document.getElementById('btnStop');
+      const sentCountEl = document.getElementById('sentCount');
+      const failCountEl = document.getElementById('failCount');
+      const rateLimitEl = document.getElementById('rateLimitCount');
+      const timerDisplay = document.getElementById('timerDisplay');
+      const progressWrap = document.getElementById('progressWrap');
+      const progressFill = document.getElementById('progressFill');
+      const liveMessage = document.getElementById('liveMessage');
+      const statsContainer = document.getElementById('statsContainer');
 
-  fetch(webhook, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(response => {
-    if(response.ok) alert("تم إرسال الرسالة بنجاح!");
-    else alert("فشل الإرسال، تحقق من الرابط.");
-  })
-  .catch(err => {
-    alert("حدث خطأ: " + err);
-  });
-}
-</script>
+      let spamActive = false;
+      let abortController = null;
+      let stats = { sent: 0, fail: 0, rateLimit: 0 };
+      let startTime = null;
 
+      // التبويبات
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+          document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+        });
+      });
+
+      // بناء الحمولة
+      function buildPayload(customContent = null) {
+        const username = usernameInput.value.trim();
+        const avatar = avatarUrlInput.value.trim();
+        const tts = ttsCheck.checked;
+        const useEmbed = embedTitle.value.trim() || embedDesc.value.trim() || embedImage.value.trim();
+
+        let payload = {};
+        if (username) payload.username = username;
+        if (avatar) payload.avatar_url = avatar;
+        if (tts) payload.tts = true;
+
+        const multiLines = multiMessages.value.trim().split('\n').filter(m => m.trim());
+        const messageContent = customContent || (multiLines.length ? multiLines[Math.floor(Math.random() * multiLines.length)] : contentInput.value.trim());
+
+        if (useEmbed) {
+          const embed = {};
+          if (embedTitle.value.trim()) embed.title = embedTitle.value.trim();
+          if (embedDesc.value.trim()) embed.description = embedDesc.value.trim();
+          if (embedColor.value.trim()) embed.color = parseInt(embedColor.value.replace('#', ''), 16) || 0x006C35;
+          if (embedImage.value.trim()) embed.image = { url: embedImage.value.trim() };
+          if (embedThumb.value.trim()) embed.thumbnail = { url: embedThumb.value.trim() };
+          if (embedAuthor.value.trim()) embed.author = { name: embedAuthor.value.trim() };
+          if (embedUrl.value.trim()) embed.url = embedUrl.value.trim();
+          payload.embeds = [embed];
+          if (messageContent) payload.content = messageContent;
+        } else {
+          payload.content = messageContent || 'رسالة من الأداة السعودية';
+        }
+
+        const fileLink = fileUrl.value.trim();
+        if (fileLink && fileLink.startsWith('http')) {
+          if (!payload.content) payload.content = '';
+          payload.content += `\n📎 ${fileLink}`;
+        }
+        return payload;
+      }
+
+      function getWebhooks() {
+        return webhooksInput.value.trim().split('\n').filter(w => w.startsWith('http'));
+      }
+
+      function showToast(msg, isError = false) {
+        const old = document.querySelector('.toast');
+        if (old) old.remove();
+        const toast = document.createElement('div');
+        toast.className = `toast ${isError ? 'error' : ''}`;
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      function updateStats(reset = false) {
+        if (reset) {
+          stats = { sent: 0, fail: 0, rateLimit: 0 };
+          startTime = Date.now();
+        }
+        sentCountEl.textContent = stats.sent;
+        failCountEl.textContent = stats.fail;
+        rateLimitEl.textContent = stats.rateLimit;
+        if (startTime) {
+          timerDisplay.textContent = Math.floor((Date.now() - startTime)/1000) + 's';
+        }
+      }
+
+      async function sendSingle() {
+        const hooks = getWebhooks();
+        if (!hooks.length) { showToast('❌ حط رابط هوك واحد على الأقل!', true); return; }
+        const payload = buildPayload();
+        try {
+          const res = await fetch(hooks[0], { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+          if (res.ok) showToast('✅ تم بحول الله!');
+          else showToast(`❌ فشل (${res.status}) شيك الرابط`, true);
+        } catch(e) { showToast('❌ خطأ في الشبكة', true); }
+      }
+
+      async function startSpam() {
+        if (spamActive) return;
+        const hooks = getWebhooks();
+        if (!hooks.length) { showToast('❌ حط روابط هوك يالحبيب!', true); return; }
+
+        const count = Math.min(parseInt(spamCount.value) || 20, 1000);
+        const minD = parseInt(delayMin.value) || 100;
+        const maxD = parseInt(delayMax.value) || 800;
+        const cd = parseInt(countdownInput.value) || 3;
+        const mode = rotateMode.value;
+
+        spamActive = true;
+        abortController = new AbortController();
+        btnSpam.style.display = 'none';
+        btnStop.style.display = 'flex';
+        statsContainer.style.display = 'flex';
+        progressWrap.style.display = 'block';
+        updateStats(true);
+        liveMessage.textContent = `⏳ العد التنازلي ${cd} ثواني...`;
+
+        await new Promise(r => setTimeout(r, cd * 1000));
+        if (!spamActive) return;
+
+        liveMessage.textContent = '🚀 بدأ السبام السعودي!';
+        let hookIndex = 0;
+        const total = count;
+
+        for (let i = 0; i < total; i++) {
+          if (!spamActive) break;
+          const randomMsg = multiMessages.value.trim().split('\n').filter(m=>m.trim());
+          const payload = buildPayload(randomMsg.length ? randomMsg[Math.floor(Math.random()*randomMsg.length)] : null);
+          const hook = mode === 'random' ? hooks[Math.floor(Math.random()*hooks.length)] : hooks[hookIndex % hooks.length];
+          
+          try {
+            const res = await fetch(hook, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), signal: abortController.signal });
+            if (res.status === 429) { stats.rateLimit++; await new Promise(r=>setTimeout(r,2000)); continue; }
+            if (res.ok) stats.sent++;
+            else stats.fail++;
+          } catch(e) {
+            if (e.name === 'AbortError') break;
+            stats.fail++;
+          }
+          updateStats();
+          progressFill.style.width = ((i+1)/total)*100 + '%';
+          liveMessage.textContent = `🔥 ${i+1}/${total} | ✅${stats.sent} ❌${stats.fail} ⏳${stats.rateLimit}`;
+          
+          await new Promise(r => setTimeout(r, Math.floor(Math.random() * (maxD - minD + 1) + minD)));
+          hookIndex++;
+        }
+        stopSpam(false);
+      }
+
+      function stopSpam(manual = true) {
+        if (abortController) abortController.abort();
+        spamActive = false;
+        btnSpam.style.display = 'flex';
+        btnStop.style.display = 'none';
+        if (manual) showToast('⏹️ تم إيقاف السبام');
+        liveMessage.textContent = manual ? '⏹️ متوقف' : '✅ خلص السبام بحول الله!';
+        setTimeout(() => {
+          if (!spamActive) {
+            statsContainer.style.display = 'none';
+            progressWrap.style.display = 'none';
+            liveMessage.textContent = '';
+          }
+        }, 3000);
+      }
+
+      btnSend.addEventListener('click', sendSingle);
+      btnSpam.addEventListener('click', startSpam);
+      btnStop.addEventListener('click', () => stopSpam(true));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); spamActive ? stopSpam(true) : startSpam(); }
+        if (e.ctrlKey && e.key === 's') { e.preventDefault(); sendSingle(); }
+      });
+
+      // قيم افتراضية
+      webhooksInput.value = 'https://discord.com/api/webhooks/...';
+      contentInput.value = 'السلام عليكم، أداة سعودية ١٠٠٪';
+    })();
+  </script>
 </body>
 </html>
